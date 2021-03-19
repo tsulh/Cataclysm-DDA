@@ -246,7 +246,7 @@ monster::monster( const mtype_id &id ) : monster()
     morale = type->morale;
     faction = type->default_faction;
     upgrades = type->upgrades && ( type->half_life || type->age_grow );
-    reproduces = type->reproduces && type->baby_timer && !monster::has_flag( MF_NO_BREED ) && !monster::neutered;
+    reproduces = type->reproduces && type->baby_timer && !monster::has_flag( MF_NO_BREED ) && !monster.neutered;
     biosignatures = type->biosignatures;
     if( monster::has_flag( MF_AQUATIC ) ) {
         fish_population = dice( 1, 20 );
