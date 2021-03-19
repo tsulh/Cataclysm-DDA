@@ -24,6 +24,7 @@ void remove_armor( monster &z );
 void remove_harness( monster &z );
 void play_with( monster &z );
 void tie_or_untie( monster &z );
+void neuter( monster &z );
 void shear_animal( monster &z );
 void mount_pet( monster &z );
 void attach_or_remove_saddle( monster &z );

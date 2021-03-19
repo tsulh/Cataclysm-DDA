@@ -40,6 +40,7 @@
 #include "units.h"
 #include "value_ptr.h"
 
+static const quality_id qual_CUT_FINE( "CUT_FINE" );
 static const quality_id qual_SHEAR( "SHEAR" );
 
 static const efftype_id effect_sheared( "sheared" );
@@ -87,6 +88,8 @@ bool monexamine::pet_menu( monster &z )
         remove_saddle,
         mount,
         rope,
+        neuter_pet,
+        pet_is_neutered,
         remove_bat,
         insert_bat,
         check_bat,
@@ -141,7 +144,17 @@ bool monexamine::pet_menu( monster &z )
                             pet_name );
         }
     }
-
+    if( z.is_reproducing() && !z.is_neutered() ) {
+       if( player_character.has_quality( qual_CUT_FINE, 3 ) ) {
+        amenu.addentry( neuter_pet, true, 'n', _("Neuter %s"), pet_name);
+        // TODO: require also c:painkillers, t:needle and c:"50 thread/sinew/plant fiber" to perform the surgery
+       } else if ( !player_character.has_quality( qual_CUT_FINE, 3 ) ) {
+        amenu.addentry( neuter_pet, false, 'n', _( "You need a precise sharp tool to neuter %s" ), pet_name );
+        }
+    }
+    if( z.is_reproducing() && z.is_neutered() ) {
+        amenu.addentry( pet_is_neutered, false, 'n', _("%s is neutered"), pet_name);
+    }
     if( z.has_flag( MF_MILKABLE ) ) {
         amenu.addentry( milk, true, 'm', _( "Milk %s" ), pet_name );
     }
@@ -257,6 +270,11 @@ bool monexamine::pet_menu( monster &z )
             break;
         case rope:
             tie_or_untie( z );
+            break;
+        case neuter_pet:
+            neuter( z );
+            break;
+        case pet_is_neutered:
             break;
         case attach_saddle:
         case remove_saddle:
@@ -787,6 +805,14 @@ void monexamine::tie_or_untie( monster &z )
         player_character.i_rem( rope_item );
         z.add_effect( effect_tied, 1_turns, true );
         add_msg( _( "You tie your %s." ), z.get_name() );
+    }
+}
+
+void monexamine::neuter( monster &z )
+{
+    if( query_yn( _( "This is an irreversible surgery. Proceed?" ) ) ) {
+            z.make_neutered();
+            add_msg( _( "You neuter your %s." ), z.get_name() );
     }
 }
 

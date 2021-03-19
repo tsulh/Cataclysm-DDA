@@ -546,6 +546,12 @@ class monster : public Creature
         void set_summon_time( const time_duration &length );
         // handles removing the monster if the timer runs out
         void decrement_summon_timer();
+        
+        // for pet neutering
+        bool is_reproducing();
+        bool is_neutered();
+        void make_neutered();
+        
     private:
         void process_trigger( mon_trigger trig, int amount );
         void process_trigger( mon_trigger trig, const std::function<int()> &amount_func );
@@ -562,6 +568,7 @@ class monster : public Creature
         int upgrade_time = 0;
         bool reproduces = false;
         cata::optional<time_point> baby_timer;
+        bool neutered = false; //neutered indicatior for pets
         bool biosignatures = false;
         cata::optional<time_point> biosig_timer;
         time_point udder_timer;
